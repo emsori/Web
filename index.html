@@ -25,7 +25,7 @@
       border-radius: 16px;
       padding: 40px;
       width: 100%;
-      max-width: 600px;
+      max-width: 640px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
 
@@ -47,23 +47,46 @@
       font-size: 20px;
     }
 
-    h1 {
-      font-size: 22px;
-      font-weight: 700;
-      color: #f1f5f9;
-    }
+    h1 { font-size: 22px; font-weight: 700; color: #f1f5f9; }
 
     .subtitle {
       font-size: 13px;
       color: #64748b;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
       margin-top: 4px;
     }
+
+    .mode-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #2d3148;
+      background: #12141f;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-color: transparent;
+      color: white;
+    }
+
+    .tab-btn:hover:not(.active) { border-color: #6366f1; color: #a5b4fc; }
 
     .drop-zone {
       border: 2px dashed #2d3148;
       border-radius: 12px;
-      padding: 40px 20px;
+      padding: 36px 20px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
@@ -85,39 +108,20 @@
       height: 100%;
     }
 
-    .drop-icon { font-size: 36px; margin-bottom: 12px; }
+    .drop-icon { font-size: 34px; margin-bottom: 10px; }
 
-    .drop-text {
-      font-size: 15px;
-      color: #94a3b8;
-    }
+    .drop-text { font-size: 14px; color: #94a3b8; }
+    .drop-text span { color: #6366f1; font-weight: 600; }
+    .drop-hint { font-size: 12px; color: #475569; margin-top: 5px; }
 
-    .drop-text span {
-      color: #6366f1;
-      font-weight: 600;
-    }
-
-    .drop-hint {
-      font-size: 12px;
-      color: #475569;
-      margin-top: 6px;
-    }
-
-    .file-selected {
-      background: #1a2e1a;
-      border-color: #22c55e;
-      border-style: solid;
-    }
-
-    .file-selected .drop-icon { filter: none; }
+    .file-selected { background: #1a2e1a; border-color: #22c55e; border-style: solid; }
 
     .stats {
-      margin-top: 24px;
+      margin-top: 20px;
       background: #12141f;
       border-radius: 10px;
       padding: 16px 20px;
       display: none;
-      gap: 0;
     }
 
     .stats.visible { display: block; }
@@ -134,26 +138,28 @@
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 7px;
     }
 
     .stat-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
+      padding: 7px 12px;
       background: #1a1d2e;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .stat-label { color: #94a3b8; }
-    .stat-value { color: #22c55e; font-weight: 600; font-family: monospace; }
+    .stat-value { color: #22c55e; font-weight: 700; font-family: monospace; font-size: 13px; }
+    .stat-total { grid-column: span 2; background: #1e2235; }
+    .stat-total .stat-value { color: #a78bfa; font-size: 14px; }
 
     .btn {
       width: 100%;
-      margin-top: 20px;
-      padding: 14px;
+      margin-top: 16px;
+      padding: 13px;
       border-radius: 10px;
       border: none;
       font-size: 15px;
@@ -170,56 +176,40 @@
     .btn-convert:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-convert:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    .btn-download {
-      background: #22c55e;
-      color: white;
-      display: none;
-    }
-
+    .btn-download { background: #22c55e; color: white; display: none; }
     .btn-download.visible { display: block; }
     .btn-download:hover { background: #16a34a; transform: translateY(-1px); }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 24px 0 10px;
+    }
 
     .info-boxes {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      margin-top: 28px;
+      gap: 8px;
     }
+
+    .info-boxes.two-col { grid-template-columns: 1fr 1fr; }
 
     .info-box {
       background: #12141f;
       border-radius: 10px;
-      padding: 14px;
+      padding: 12px;
       text-align: center;
       border: 1px solid #1e2235;
     }
 
-    .info-box .arrow {
-      font-size: 11px;
-      color: #64748b;
-      margin: 4px 0;
-    }
+    .info-box .arrow { font-size: 10px; color: #64748b; margin: 3px 0; }
+    .info-box .from { font-size: 10px; color: #f87171; font-family: monospace; word-break: break-all; }
+    .info-box .to { font-size: 10px; color: #22c55e; font-family: monospace; word-break: break-all; }
 
-    .info-box .from {
-      font-size: 11px;
-      color: #f87171;
-      font-family: monospace;
-      word-break: break-all;
-    }
-
-    .info-box .to {
-      font-size: 11px;
-      color: #22c55e;
-      font-family: monospace;
-      word-break: break-all;
-    }
-
-    .footer {
-      margin-top: 24px;
-      font-size: 12px;
-      color: #334155;
-      text-align: center;
-    }
+    .footer { margin-top: 20px; font-size: 12px; color: #334155; text-align: center; }
 
     .error-msg {
       background: #2d1515;
@@ -228,11 +218,14 @@
       padding: 12px 16px;
       font-size: 13px;
       color: #fca5a5;
-      margin-top: 16px;
+      margin-top: 14px;
       display: none;
     }
 
     .error-msg.visible { display: block; }
+
+    .mode-panel { display: none; }
+    .mode-panel.active { display: block; }
   </style>
 </head>
 <body>
@@ -241,7 +234,12 @@
       <div class="logo-icon">🗺️</div>
       <h1>SA-MP Mapping Converter</h1>
     </div>
-    <p class="subtitle">Konversi CreateObject → CreateDynamicObject otomatis. Cocok untuk server SA-MP dengan Incognito Streamer.</p>
+    <p class="subtitle">Konversi mapping & textdraw SA-MP otomatis. Support Incognito Streamer Plugin.</p>
+
+    <div class="mode-tabs">
+      <button class="tab-btn active" onclick="switchMode('object')" id="tabObject">🧱 Object Converter</button>
+      <button class="tab-btn" onclick="switchMode('textdraw')" id="tabTextdraw">📝 TextDraw Converter</button>
+    </div>
 
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" accept=".pwn,.inc,.txt" />
@@ -254,54 +252,93 @@
 
     <div class="stats" id="stats">
       <div class="stats-title">Hasil Konversi</div>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <span class="stat-label">CreateObject</span>
-          <span class="stat-value" id="statCO">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">SetObjectMaterial</span>
-          <span class="stat-value" id="statSOM">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">SetObjectMaterialText</span>
-          <span class="stat-value" id="statSOMT">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Total Perubahan</span>
-          <span class="stat-value" id="statTotal">0</span>
-        </div>
-      </div>
+      <div class="stats-grid" id="statsGrid"></div>
     </div>
 
     <button class="btn btn-convert" id="btnConvert" disabled>Konversi File</button>
     <button class="btn btn-download" id="btnDownload">⬇ Download Hasil Konversi</button>
 
-    <div class="info-boxes">
-      <div class="info-box">
-        <div class="from">CreateObject</div>
-        <div class="arrow">↓</div>
-        <div class="to">CreateDynamicObject</div>
-      </div>
-      <div class="info-box">
-        <div class="from">SetObjectMaterial</div>
-        <div class="arrow">↓</div>
-        <div class="to">SetDynamicObjectMaterial</div>
-      </div>
-      <div class="info-box">
-        <div class="from">SetObjectMaterialText</div>
-        <div class="arrow">↓</div>
-        <div class="to">SetDynamicObjectMaterialText</div>
-      </div>
+    <div id="infoPanel">
+      <div class="section-title" id="infoTitle">Yang Dikonversi</div>
+      <div class="info-boxes" id="infoBoxes"></div>
     </div>
   </div>
 
-  <div class="footer">SA-MP Mapping Converter • Untuk server dengan Incognito Streamer Plugin</div>
+  <div class="footer">SA-MP Mapping Converter • Mevitra Pride RP Tools</div>
 
   <script>
     let fileContent = null;
     let fileName = null;
     let convertedContent = null;
+    let currentMode = 'object';
+
+    const MODES = {
+      object: {
+        infoBoxes: [
+          ['CreateObject', 'CreateDynamicObject'],
+          ['SetObjectMaterial', 'SetDynamicObjectMaterial'],
+          ['SetObjectMaterialText', 'SetDynamicObjectMaterialText'],
+        ],
+        twoCol: false,
+        convert: convertObjects
+      },
+      textdraw: {
+        infoBoxes: [
+          ['TextDrawCreate', 'CreatePlayerTextDraw'],
+          ['TextDrawLetterSize', 'PlayerTextDrawLetterSize'],
+          ['TextDrawTextSize', 'PlayerTextDrawTextSize'],
+          ['TextDrawAlignment', 'PlayerTextDrawAlignment'],
+          ['TextDrawColor', 'PlayerTextDrawColor'],
+          ['TextDrawUseBox', 'PlayerTextDrawUseBox'],
+          ['TextDrawBoxColor', 'PlayerTextDrawBoxColor'],
+          ['TextDrawSetShadow', 'PlayerTextDrawSetShadow'],
+          ['TextDrawSetOutline', 'PlayerTextDrawSetOutline'],
+          ['TextDrawBackgroundColor', 'PlayerTextDrawBackgroundColor'],
+          ['TextDrawFont', 'PlayerTextDrawFont'],
+          ['TextDrawSetProportional', 'PlayerTextDrawSetProportional'],
+          ['TextDrawSetSelectable', 'PlayerTextDrawSetSelectable'],
+          ['TextDrawDestroy', 'PlayerTextDrawDestroy'],
+          ['TextDrawShowForPlayer', 'PlayerTextDrawShow'],
+          ['TextDrawHideForPlayer', 'PlayerTextDrawHide'],
+        ],
+        twoCol: true,
+        convert: convertTextdraws
+      }
+    };
+
+    function renderInfoBoxes() {
+      const mode = MODES[currentMode];
+      const container = document.getElementById('infoBoxes');
+      container.innerHTML = '';
+      container.className = 'info-boxes' + (mode.twoCol ? ' two-col' : '');
+      mode.infoBoxes.forEach(([from, to]) => {
+        container.innerHTML += `
+          <div class="info-box">
+            <div class="from">${from}</div>
+            <div class="arrow">↓</div>
+            <div class="to">${to}</div>
+          </div>`;
+      });
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('tabObject').className = 'tab-btn' + (mode === 'object' ? ' active' : '');
+      document.getElementById('tabTextdraw').className = 'tab-btn' + (mode === 'textdraw' ? ' active' : '');
+      renderInfoBoxes();
+      resetUI();
+    }
+
+    function resetUI() {
+      document.getElementById('stats').classList.remove('visible');
+      document.getElementById('btnDownload').classList.remove('visible');
+      document.getElementById('errorMsg').classList.remove('visible');
+      convertedContent = null;
+      if (!fileContent) return;
+      document.getElementById('btnConvert').disabled = false;
+    }
+
+    renderInfoBoxes();
 
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
@@ -310,24 +347,13 @@
     const stats = document.getElementById('stats');
     const errorMsg = document.getElementById('errorMsg');
 
-    // Drag & Drop
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-    });
-
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-
     dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      if (file) handleFile(file);
+      e.preventDefault(); dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
     });
-
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files[0]) handleFile(e.target.files[0]);
-    });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); });
 
     function handleFile(file) {
       fileName = file.name;
@@ -339,10 +365,7 @@
         document.getElementById('dropText').innerHTML = `<span>${file.name}</span> siap dikonversi`;
         document.getElementById('dropHint').textContent = `${(file.size / 1024).toFixed(1)} KB`;
         btnConvert.disabled = false;
-        stats.classList.remove('visible');
-        btnDownload.classList.remove('visible');
-        errorMsg.classList.remove('visible');
-        convertedContent = null;
+        resetUI();
       };
       reader.readAsText(file, 'utf-8');
     }
@@ -350,14 +373,24 @@
     btnConvert.addEventListener('click', () => {
       if (!fileContent) return;
       try {
-        const result = convertMapping(fileContent);
+        const result = MODES[currentMode].convert(fileContent);
         convertedContent = result.content;
-
-        document.getElementById('statCO').textContent = result.countCO;
-        document.getElementById('statSOM').textContent = result.countSOM;
-        document.getElementById('statSOMT').textContent = result.countSOMT;
-        document.getElementById('statTotal').textContent = result.countCO + result.countSOM + result.countSOMT;
-
+        const grid = document.getElementById('statsGrid');
+        grid.innerHTML = '';
+        let total = 0;
+        result.stats.forEach(([label, count]) => {
+          total += count;
+          grid.innerHTML += `
+            <div class="stat-item">
+              <span class="stat-label">${label}</span>
+              <span class="stat-value">${count}</span>
+            </div>`;
+        });
+        grid.innerHTML += `
+          <div class="stat-item stat-total">
+            <span class="stat-label">Total Perubahan</span>
+            <span class="stat-value">${total}</span>
+          </div>`;
         stats.classList.add('visible');
         btnDownload.classList.add('visible');
         errorMsg.classList.remove('visible');
@@ -374,20 +407,20 @@
       const blob = new Blob([convertedContent], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = outName;
-      a.click();
+      a.href = url; a.download = outName; a.click();
       URL.revokeObjectURL(url);
     });
 
-    function convertMapping(content) {
+    // ─── MODE 1: Object Converter ───────────────────────────────────────────────
+
+    function convertObjects(content) {
       let result = content;
       let countCO = 0, countSOM = 0, countSOMT = 0;
 
-      // 1. Convert CreateObject(model, x, y, z, rx, ry, rz, DrawDist)
-      //    → CreateDynamicObject(model, x, y, z, rx, ry, rz, -1, -1, -1, DrawDist, DrawDist)
-      result = result.replace(/(?<!Dynamic)(?<!Ex)CreateObject\(([^)]+)\)/g, (match, args) => {
-        const parts = args.split(',').map(s => s.trim());
+      // CreateObject(model, x, y, z, rx, ry, rz, DrawDist)
+      // → CreateDynamicObject(model, x, y, z, rx, ry, rz, -1, -1, -1, DrawDist, DrawDist)
+      result = result.replace(/(?<![A-Za-z0-9_])CreateObject\(([^)]+)\)/g, (match, args) => {
+        const parts = splitArgs(args);
         if (parts.length === 8) {
           countCO++;
           const [model, x, y, z, rx, ry, rz, drawDist] = parts;
@@ -396,25 +429,109 @@
         return match;
       });
 
-      // 2. SetObjectMaterial → SetDynamicObjectMaterial
-      const somBefore = (result.match(/(?<!Dynamic)SetObjectMaterial\(/g) || []).length;
-      result = result.replace(/(?<!Dynamic)SetObjectMaterial\(/g, () => {
-        countSOM++;
-        return 'SetDynamicObjectMaterial(';
-      });
+      // SetObjectMaterial → SetDynamicObjectMaterial
+      result = result.replace(/(?<![A-Za-z0-9_])SetObjectMaterial\(/g, () => { countSOM++; return 'SetDynamicObjectMaterial('; });
 
-      // 3. SetObjectMaterialText(obj, "text", index, ...) 
-      //    → SetDynamicObjectMaterialText(obj, index, "text", ...)
-      //    NOTE: argument 2 (text) and 3 (index) are SWAPPED in Dynamic version
+      // SetObjectMaterialText(obj, "text", index, ...) → SetDynamicObjectMaterialText(obj, index, "text", ...)
       result = result.replace(
-        /(?<!Dynamic)SetObjectMaterialText\(([^,]+),\s*("(?:[^"\\]|\\.)*"),\s*(\d+),\s*([^)]+)\)/g,
+        /(?<![A-Za-z0-9_])SetObjectMaterialText\(([^,]+),\s*("(?:[^"\\]|\\.)*"),\s*(\d+),\s*([^;]+)\)/g,
         (match, obj, text, index, rest) => {
           countSOMT++;
-          return `SetDynamicObjectMaterialText(${obj}, ${index}, ${text}, ${rest})`;
+          return `SetDynamicObjectMaterialText(${obj.trim()}, ${index}, ${text}, ${rest.trim()})`;
         }
       );
 
-      return { content: result, countCO, countSOM, countSOMT };
+      return {
+        content: result,
+        stats: [
+          ['CreateObject', countCO],
+          ['SetObjectMaterial', countSOM],
+          ['SetObjectMaterialText', countSOMT],
+        ]
+      };
+    }
+
+    // ─── MODE 2: TextDraw Converter ──────────────────────────────────────────────
+    // Converts global TextDraw → PlayerTextDraw (adds `playerid` parameter)
+
+    function convertTextdraws(content) {
+      let result = content;
+      let counts = {};
+
+      function count(key) { counts[key] = (counts[key] || 0) + 1; }
+
+      // Variable type: Text: → PlayerText:
+      result = result.replace(/(?<![A-Za-z0-9_])Text:/g, () => { count('Text: tag'); return 'PlayerText:'; });
+
+      // TextDrawCreate(x, y, text) → CreatePlayerTextDraw(playerid, x, y, text)
+      result = result.replace(/(?<![A-Za-z0-9_])TextDrawCreate\(/g, () => { count('TextDrawCreate'); return 'CreatePlayerTextDraw(playerid, '; });
+
+      // TextDrawDestroy(td) → PlayerTextDrawDestroy(playerid, td)
+      result = result.replace(/(?<![A-Za-z0-9_])TextDrawDestroy\(([^)]+)\)/g, (m, td) => {
+        count('TextDrawDestroy'); return `PlayerTextDrawDestroy(playerid, ${td.trim()})`;
+      });
+
+      // Functions with pattern: TextDrawXxx(td, ...) → PlayerTextDrawXxx(playerid, td, ...)
+      const simpleConversions = [
+        'TextDrawLetterSize',
+        'TextDrawTextSize',
+        'TextDrawAlignment',
+        'TextDrawColor',
+        'TextDrawUseBox',
+        'TextDrawBoxColor',
+        'TextDrawSetShadow',
+        'TextDrawSetOutline',
+        'TextDrawBackgroundColor',
+        'TextDrawFont',
+        'TextDrawSetProportional',
+        'TextDrawSetSelectable',
+        'TextDrawSetString',
+        'TextDrawSetPreviewModel',
+        'TextDrawSetPreviewRot',
+        'TextDrawSetPreviewVehCol',
+      ];
+
+      simpleConversions.forEach(fn => {
+        const playerFn = fn.replace('TextDraw', 'PlayerTextDraw');
+        const re = new RegExp(`(?<![A-Za-z0-9_])${fn}\\(([^,]+),`, 'g');
+        result = result.replace(re, (match, td) => {
+          count(fn); return `${playerFn}(playerid, ${td.trim()},`;
+        });
+      });
+
+      // TextDrawShowForPlayer(playerid, td) → PlayerTextDrawShow(playerid, td)
+      result = result.replace(/(?<![A-Za-z0-9_])TextDrawShowForPlayer\(([^,]+),\s*([^)]+)\)/g, (m, pid, td) => {
+        count('TextDrawShowForPlayer'); return `PlayerTextDrawShow(${pid.trim()}, ${td.trim()})`;
+      });
+
+      // TextDrawHideForPlayer(playerid, td) → PlayerTextDrawHide(playerid, td)
+      result = result.replace(/(?<![A-Za-z0-9_])TextDrawHideForPlayer\(([^,]+),\s*([^)]+)\)/g, (m, pid, td) => {
+        count('TextDrawHideForPlayer'); return `PlayerTextDrawHide(${pid.trim()}, ${td.trim()})`;
+      });
+
+      // TextDrawShowForAll / TextDrawHideForAll — warn in stats
+      const showAll = (result.match(/TextDrawShowForAll\(/g) || []).length;
+      const hideAll = (result.match(/TextDrawHideForAll\(/g) || []).length;
+      if (showAll > 0) counts['⚠ TextDrawShowForAll (manual)'] = showAll;
+      if (hideAll > 0) counts['⚠ TextDrawHideForAll (manual)'] = hideAll;
+
+      const statsArr = Object.entries(counts).map(([k, v]) => [k, v]);
+      return { content: result, stats: statsArr };
+    }
+
+    // ─── Helper ──────────────────────────────────────────────────────────────────
+
+    function splitArgs(str) {
+      const parts = [];
+      let depth = 0, current = '';
+      for (const ch of str) {
+        if (ch === '(' || ch === '[') depth++;
+        else if (ch === ')' || ch === ']') depth--;
+        else if (ch === ',' && depth === 0) { parts.push(current.trim()); current = ''; continue; }
+        current += ch;
+      }
+      if (current.trim()) parts.push(current.trim());
+      return parts;
     }
   </script>
 </body>

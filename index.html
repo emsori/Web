@@ -1,55 +1,421 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeri Otomatis</title>
-    <style>
-        body { font-family: sans-serif; background: #111; color: white; text-align: center; padding: 20px; margin: 0; }
-        h1 { color: #00d4ff; margin-bottom: 30px; }
-        .gallery { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
-        .card { width: 300px; background: #222; border-radius: 12px; overflow: hidden; text-decoration: none; color: white; transition: 0.3s; border: 1px solid #333; }
-        .card:hover { transform: translateY(-8px); border-color: #00d4ff; box-shadow: 0 10px 20px rgba(0,212,255,0.2); }
-        .thumbnail-container { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #000; }
-        .thumbnail { width: 100%; height: 100%; object-fit: cover; }
-        .card p { padding: 15px; margin: 0; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SA-MP Mapping Converter</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: #1a1d2e;
+      border: 1px solid #2d3148;
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 32px;
+      margin-top: 4px;
+    }
+
+    .drop-zone {
+      border: 2px dashed #2d3148;
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #12141f;
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: #6366f1;
+      background: #1a1c2e;
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-icon { font-size: 36px; margin-bottom: 12px; }
+
+    .drop-text {
+      font-size: 15px;
+      color: #94a3b8;
+    }
+
+    .drop-text span {
+      color: #6366f1;
+      font-weight: 600;
+    }
+
+    .drop-hint {
+      font-size: 12px;
+      color: #475569;
+      margin-top: 6px;
+    }
+
+    .file-selected {
+      background: #1a2e1a;
+      border-color: #22c55e;
+      border-style: solid;
+    }
+
+    .file-selected .drop-icon { filter: none; }
+
+    .stats {
+      margin-top: 24px;
+      background: #12141f;
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: none;
+      gap: 0;
+    }
+
+    .stats.visible { display: block; }
+
+    .stats-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #1a1d2e;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .stat-label { color: #94a3b8; }
+    .stat-value { color: #22c55e; font-weight: 600; font-family: monospace; }
+
+    .btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-convert {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+    }
+
+    .btn-convert:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-convert:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .btn-download {
+      background: #22c55e;
+      color: white;
+      display: none;
+    }
+
+    .btn-download.visible { display: block; }
+    .btn-download:hover { background: #16a34a; transform: translateY(-1px); }
+
+    .info-boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .info-box {
+      background: #12141f;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid #1e2235;
+    }
+
+    .info-box .arrow {
+      font-size: 11px;
+      color: #64748b;
+      margin: 4px 0;
+    }
+
+    .info-box .from {
+      font-size: 11px;
+      color: #f87171;
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    .info-box .to {
+      font-size: 11px;
+      color: #22c55e;
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    .footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #334155;
+      text-align: center;
+    }
+
+    .error-msg {
+      background: #2d1515;
+      border: 1px solid #7f1d1d;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #fca5a5;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; }
+  </style>
 </head>
 <body>
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon">🗺️</div>
+      <h1>SA-MP Mapping Converter</h1>
+    </div>
+    <p class="subtitle">Konversi CreateObject → CreateDynamicObject otomatis. Cocok untuk server SA-MP dengan Incognito Streamer.</p>
 
-    <h1>🎬 Galeri Video</h1>
-    
-    <div id="gallery-container" class="gallery">
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".pwn,.inc,.txt" />
+      <div class="drop-icon" id="dropIcon">📂</div>
+      <div class="drop-text" id="dropText">Drop file <span>.pwn</span> di sini atau <span>klik untuk pilih</span></div>
+      <div class="drop-hint" id="dropHint">Supports: .pwn, .inc, .txt</div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="stats" id="stats">
+      <div class="stats-title">Hasil Konversi</div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-label">CreateObject</span>
+          <span class="stat-value" id="statCO">0</span>
         </div>
+        <div class="stat-item">
+          <span class="stat-label">SetObjectMaterial</span>
+          <span class="stat-value" id="statSOM">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">SetObjectMaterialText</span>
+          <span class="stat-value" id="statSOMT">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Total Perubahan</span>
+          <span class="stat-value" id="statTotal">0</span>
+        </div>
+      </div>
+    </div>
 
-    <script>
-        // Memanggil data dari file data.json
-        fetch('./data.json')
-            .then(response => {
-                if (!response.ok) throw new Error('Gagal memuat data.json');
-                return response.json();
-            })
-            .then(data => {
-                const container = document.getElementById('gallery-container');
-                container.innerHTML = ''; // Bersihkan loading text
-                
-                data.forEach(item => {
-                    const html = `
-                        <a href="nonton.html?video=${item.video}" class="card">
-                            <div class="thumbnail-container">
-                                <img src="${item.foto}" class="thumbnail" onerror="this.src='https://placehold.co/600x400?text=Foto+Tidak+Ada'">
-                            </div>
-                            <p>${item.judul}</p>
-                        </a>
-                    `;
-                    container.innerHTML += html;
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('gallery-container').innerHTML = '<p>Gagal memuat video. Pastikan data.json sudah benar.</p>';
-            });
-    </script>
+    <button class="btn btn-convert" id="btnConvert" disabled>Konversi File</button>
+    <button class="btn btn-download" id="btnDownload">⬇ Download Hasil Konversi</button>
 
+    <div class="info-boxes">
+      <div class="info-box">
+        <div class="from">CreateObject</div>
+        <div class="arrow">↓</div>
+        <div class="to">CreateDynamicObject</div>
+      </div>
+      <div class="info-box">
+        <div class="from">SetObjectMaterial</div>
+        <div class="arrow">↓</div>
+        <div class="to">SetDynamicObjectMaterial</div>
+      </div>
+      <div class="info-box">
+        <div class="from">SetObjectMaterialText</div>
+        <div class="arrow">↓</div>
+        <div class="to">SetDynamicObjectMaterialText</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">SA-MP Mapping Converter • Untuk server dengan Incognito Streamer Plugin</div>
+
+  <script>
+    let fileContent = null;
+    let fileName = null;
+    let convertedContent = null;
+
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const btnConvert = document.getElementById('btnConvert');
+    const btnDownload = document.getElementById('btnDownload');
+    const stats = document.getElementById('stats');
+    const errorMsg = document.getElementById('errorMsg');
+
+    // Drag & Drop
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      fileName = file.name;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        fileContent = e.target.result;
+        dropZone.classList.add('file-selected');
+        document.getElementById('dropIcon').textContent = '✅';
+        document.getElementById('dropText').innerHTML = `<span>${file.name}</span> siap dikonversi`;
+        document.getElementById('dropHint').textContent = `${(file.size / 1024).toFixed(1)} KB`;
+        btnConvert.disabled = false;
+        stats.classList.remove('visible');
+        btnDownload.classList.remove('visible');
+        errorMsg.classList.remove('visible');
+        convertedContent = null;
+      };
+      reader.readAsText(file, 'utf-8');
+    }
+
+    btnConvert.addEventListener('click', () => {
+      if (!fileContent) return;
+      try {
+        const result = convertMapping(fileContent);
+        convertedContent = result.content;
+
+        document.getElementById('statCO').textContent = result.countCO;
+        document.getElementById('statSOM').textContent = result.countSOM;
+        document.getElementById('statSOMT').textContent = result.countSOMT;
+        document.getElementById('statTotal').textContent = result.countCO + result.countSOM + result.countSOMT;
+
+        stats.classList.add('visible');
+        btnDownload.classList.add('visible');
+        errorMsg.classList.remove('visible');
+      } catch (e) {
+        errorMsg.textContent = 'Error: ' + e.message;
+        errorMsg.classList.add('visible');
+      }
+    });
+
+    btnDownload.addEventListener('click', () => {
+      if (!convertedContent) return;
+      const baseName = fileName.replace(/\.[^.]+$/, '');
+      const outName = baseName + '_converted.pwn';
+      const blob = new Blob([convertedContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = outName;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    function convertMapping(content) {
+      let result = content;
+      let countCO = 0, countSOM = 0, countSOMT = 0;
+
+      // 1. Convert CreateObject(model, x, y, z, rx, ry, rz, DrawDist)
+      //    → CreateDynamicObject(model, x, y, z, rx, ry, rz, -1, -1, -1, DrawDist, DrawDist)
+      result = result.replace(/(?<!Dynamic)(?<!Ex)CreateObject\(([^)]+)\)/g, (match, args) => {
+        const parts = args.split(',').map(s => s.trim());
+        if (parts.length === 8) {
+          countCO++;
+          const [model, x, y, z, rx, ry, rz, drawDist] = parts;
+          return `CreateDynamicObject(${model}, ${x}, ${y}, ${z}, ${rx}, ${ry}, ${rz}, -1, -1, -1, ${drawDist}, ${drawDist})`;
+        }
+        return match;
+      });
+
+      // 2. SetObjectMaterial → SetDynamicObjectMaterial
+      const somBefore = (result.match(/(?<!Dynamic)SetObjectMaterial\(/g) || []).length;
+      result = result.replace(/(?<!Dynamic)SetObjectMaterial\(/g, () => {
+        countSOM++;
+        return 'SetDynamicObjectMaterial(';
+      });
+
+      // 3. SetObjectMaterialText(obj, "text", index, ...) 
+      //    → SetDynamicObjectMaterialText(obj, index, "text", ...)
+      //    NOTE: argument 2 (text) and 3 (index) are SWAPPED in Dynamic version
+      result = result.replace(
+        /(?<!Dynamic)SetObjectMaterialText\(([^,]+),\s*("(?:[^"\\]|\\.)*"),\s*(\d+),\s*([^)]+)\)/g,
+        (match, obj, text, index, rest) => {
+          countSOMT++;
+          return `SetDynamicObjectMaterialText(${obj}, ${index}, ${text}, ${rest})`;
+        }
+      );
+
+      return { content: result, countCO, countSOM, countSOMT };
+    }
+  </script>
 </body>
 </html>

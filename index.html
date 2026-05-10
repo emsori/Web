@@ -25,7 +25,7 @@
       border-radius: 16px;
       padding: 40px;
       width: 100%;
-      max-width: 640px;
+      max-width: 660px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
 
@@ -64,12 +64,12 @@
 
     .tab-btn {
       flex: 1;
-      padding: 10px 12px;
+      padding: 10px 8px;
       border-radius: 8px;
       border: 1px solid #2d3148;
       background: #12141f;
       color: #64748b;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
@@ -109,12 +109,111 @@
     }
 
     .drop-icon { font-size: 34px; margin-bottom: 10px; }
-
     .drop-text { font-size: 14px; color: #94a3b8; }
     .drop-text span { color: #6366f1; font-weight: 600; }
     .drop-hint { font-size: 12px; color: #475569; margin-top: 5px; }
-
     .file-selected { background: #1a2e1a; border-color: #22c55e; border-style: solid; }
+
+    /* Stream Distance panel */
+    .sd-panel {
+      margin-top: 20px;
+      background: #12141f;
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #1e2235;
+    }
+
+    .sd-panel-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .sd-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .sd-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+      min-width: 130px;
+    }
+
+    .sd-field label {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .sd-field input[type="number"] {
+      background: #1a1d2e;
+      border: 1px solid #2d3148;
+      border-radius: 8px;
+      color: #f1f5f9;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 10px 14px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: monospace;
+    }
+
+    .sd-field input[type="number"]:focus { border-color: #6366f1; }
+
+    .sd-toggle-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sd-toggle {
+      flex: 1;
+      min-width: 140px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #2d3148;
+      background: #12141f;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .sd-toggle.active {
+      background: #1e2a1e;
+      border-color: #22c55e;
+      color: #22c55e;
+    }
+
+    .sd-toggle:hover:not(.active) { border-color: #6366f1; color: #a5b4fc; }
+
+    .sd-hint {
+      font-size: 11px;
+      color: #475569;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .sd-hint code {
+      background: #1e2235;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #a5b4fc;
+      font-size: 11px;
+    }
 
     .stats {
       margin-top: 20px;
@@ -226,6 +325,25 @@
 
     .mode-panel { display: none; }
     .mode-panel.active { display: block; }
+
+    /* Breakdown table for stream distance stats */
+    .breakdown {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #475569;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 12px;
+      border-radius: 6px;
+      background: #12141f;
+      margin-top: 4px;
+    }
+
+    .breakdown-row .old { color: #f87171; font-family: monospace; }
+    .breakdown-row .count { color: #a78bfa; font-family: monospace; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -237,10 +355,12 @@
     <p class="subtitle">Konversi mapping & textdraw SA-MP otomatis. Support Incognito Streamer Plugin.</p>
 
     <div class="mode-tabs">
-      <button class="tab-btn active" onclick="switchMode('object')" id="tabObject">🧱 Object Converter</button>
-      <button class="tab-btn" onclick="switchMode('textdraw')" id="tabTextdraw">📝 TextDraw Converter</button>
+      <button class="tab-btn active" onclick="switchMode('object')" id="tabObject">🧱 Object</button>
+      <button class="tab-btn" onclick="switchMode('textdraw')" id="tabTextdraw">📝 TextDraw</button>
+      <button class="tab-btn" onclick="switchMode('streamdist')" id="tabStreamdist">📡 Stream Distance</button>
     </div>
 
+    <!-- Drop zone (shared) -->
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" accept=".pwn,.inc,.txt" />
       <div class="drop-icon" id="dropIcon">📂</div>
@@ -250,9 +370,47 @@
 
     <div class="error-msg" id="errorMsg"></div>
 
+    <!-- Stream Distance Config Panel -->
+    <div class="sd-panel" id="sdPanel" style="display:none;">
+      <div class="sd-panel-title">Pengaturan Stream Distance</div>
+
+      <div class="sd-row">
+        <div class="sd-field">
+          <label>Nilai Baru (Stream & Draw Distance)</label>
+          <input type="number" id="sdNewValue" value="600" min="50" max="9999" step="50" />
+        </div>
+      </div>
+
+      <div class="sd-panel-title" style="margin-top:12px; margin-bottom:8px;">Mode Penggantian</div>
+      <div class="sd-toggle-row">
+        <div class="sd-toggle active" id="toggleAll" onclick="setSdMode('all')">
+          🔄 Ganti Semua
+        </div>
+        <div class="sd-toggle" id="toggleBelow" onclick="setSdMode('below')">
+          ⬆️ Ganti yang Di Bawah Nilai Baru
+        </div>
+        <div class="sd-toggle" id="toggleExact" onclick="setSdMode('exact')">
+          🎯 Ganti Nilai Tertentu Saja
+        </div>
+      </div>
+
+      <div id="exactValueRow" style="display:none; margin-top:12px;">
+        <div class="sd-field">
+          <label>Ganti hanya nilai ini</label>
+          <input type="number" id="sdExactValue" value="300" min="0" max="9999" step="50" />
+        </div>
+      </div>
+
+      <div class="sd-hint" style="margin-top:12px;">
+        Parameter yang diganti: <code>streamdistance</code> dan <code>drawdistance</code><br>
+        (parameter ke-11 dan ke-12 pada <code>CreateDynamicObject</code>)
+      </div>
+    </div>
+
     <div class="stats" id="stats">
       <div class="stats-title">Hasil Konversi</div>
       <div class="stats-grid" id="statsGrid"></div>
+      <div class="breakdown" id="breakdown"></div>
     </div>
 
     <button class="btn btn-convert" id="btnConvert" disabled>Konversi File</button>
@@ -271,7 +429,18 @@
     let fileName = null;
     let convertedContent = null;
     let currentMode = 'object';
+    let sdMode = 'all';
 
+    // ─── Stream Distance Mode ─────────────────────────────────────────────────────
+    function setSdMode(mode) {
+      sdMode = mode;
+      document.getElementById('toggleAll').classList.toggle('active', mode === 'all');
+      document.getElementById('toggleBelow').classList.toggle('active', mode === 'below');
+      document.getElementById('toggleExact').classList.toggle('active', mode === 'exact');
+      document.getElementById('exactValueRow').style.display = mode === 'exact' ? 'block' : 'none';
+    }
+
+    // ─── Mode Definitions ────────────────────────────────────────────────────────
     const MODES = {
       object: {
         infoBoxes: [
@@ -280,7 +449,8 @@
           ['SetObjectMaterialText', 'SetDynamicObjectMaterialText'],
         ],
         twoCol: false,
-        convert: convertObjects
+        convert: convertObjects,
+        infoTitle: 'Yang Dikonversi'
       },
       textdraw: {
         infoBoxes: [
@@ -302,15 +472,25 @@
           ['TextDrawHideForPlayer', 'PlayerTextDrawHide'],
         ],
         twoCol: true,
-        convert: convertTextdraws
+        convert: convertTextdraws,
+        infoTitle: 'Yang Dikonversi'
+      },
+      streamdist: {
+        infoBoxes: [],
+        twoCol: false,
+        convert: convertStreamDistance,
+        infoTitle: ''
       }
     };
 
     function renderInfoBoxes() {
       const mode = MODES[currentMode];
       const container = document.getElementById('infoBoxes');
+      const titleEl = document.getElementById('infoTitle');
       container.innerHTML = '';
       container.className = 'info-boxes' + (mode.twoCol ? ' two-col' : '');
+      titleEl.textContent = mode.infoTitle;
+      titleEl.style.display = mode.infoBoxes.length === 0 ? 'none' : '';
       mode.infoBoxes.forEach(([from, to]) => {
         container.innerHTML += `
           <div class="info-box">
@@ -319,12 +499,14 @@
             <div class="to">${to}</div>
           </div>`;
       });
+      document.getElementById('sdPanel').style.display = currentMode === 'streamdist' ? 'block' : 'none';
     }
 
     function switchMode(mode) {
       currentMode = mode;
       document.getElementById('tabObject').className = 'tab-btn' + (mode === 'object' ? ' active' : '');
       document.getElementById('tabTextdraw').className = 'tab-btn' + (mode === 'textdraw' ? ' active' : '');
+      document.getElementById('tabStreamdist').className = 'tab-btn' + (mode === 'streamdist' ? ' active' : '');
       renderInfoBoxes();
       resetUI();
     }
@@ -333,6 +515,7 @@
       document.getElementById('stats').classList.remove('visible');
       document.getElementById('btnDownload').classList.remove('visible');
       document.getElementById('errorMsg').classList.remove('visible');
+      document.getElementById('breakdown').innerHTML = '';
       convertedContent = null;
       if (!fileContent) return;
       document.getElementById('btnConvert').disabled = false;
@@ -391,6 +574,23 @@
             <span class="stat-label">Total Perubahan</span>
             <span class="stat-value">${total}</span>
           </div>`;
+
+        // Breakdown for stream distance
+        const breakdownEl = document.getElementById('breakdown');
+        if (result.breakdown && result.breakdown.length > 0) {
+          breakdownEl.innerHTML = '<div style="font-size:11px;color:#64748b;margin-top:10px;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Distribusi Nilai Lama</div>';
+          result.breakdown.forEach(([oldVal, cnt]) => {
+            breakdownEl.innerHTML += `
+              <div class="breakdown-row">
+                <span class="old">${oldVal}</span>
+                <span>${cnt} object${cnt > 1 ? 's' : ''} diganti</span>
+                <span class="count">×${cnt}</span>
+              </div>`;
+          });
+        } else {
+          breakdownEl.innerHTML = '';
+        }
+
         stats.classList.add('visible');
         btnDownload.classList.add('visible');
         errorMsg.classList.remove('visible');
@@ -403,7 +603,8 @@
     btnDownload.addEventListener('click', () => {
       if (!convertedContent) return;
       const baseName = fileName.replace(/\.[^.]+$/, '');
-      const outName = baseName + '_converted.pwn';
+      const suffix = currentMode === 'streamdist' ? '_streamfix' : '_converted';
+      const outName = baseName + suffix + '.pwn';
       const blob = new Blob([convertedContent], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -417,8 +618,6 @@
       let result = content;
       let countCO = 0, countSOM = 0, countSOMT = 0;
 
-      // CreateObject(model, x, y, z, rx, ry, rz, DrawDist)
-      // → CreateDynamicObject(model, x, y, z, rx, ry, rz, -1, -1, -1, DrawDist, DrawDist)
       result = result.replace(/(?<![A-Za-z0-9_])CreateObject\(([^)]+)\)/g, (match, args) => {
         const parts = splitArgs(args);
         if (parts.length === 8) {
@@ -429,10 +628,8 @@
         return match;
       });
 
-      // SetObjectMaterial → SetDynamicObjectMaterial
       result = result.replace(/(?<![A-Za-z0-9_])SetObjectMaterial\(/g, () => { countSOM++; return 'SetDynamicObjectMaterial('; });
 
-      // SetObjectMaterialText(obj, "text", index, ...) → SetDynamicObjectMaterialText(obj, index, "text", ...)
       result = result.replace(
         /(?<![A-Za-z0-9_])SetObjectMaterialText\(([^,]+),\s*("(?:[^"\\]|\\.)*"),\s*(\d+),\s*([^;]+)\)/g,
         (match, obj, text, index, rest) => {
@@ -452,7 +649,6 @@
     }
 
     // ─── MODE 2: TextDraw Converter ──────────────────────────────────────────────
-    // Converts global TextDraw → PlayerTextDraw (adds `playerid` parameter)
 
     function convertTextdraws(content) {
       let result = content;
@@ -460,34 +656,19 @@
 
       function count(key) { counts[key] = (counts[key] || 0) + 1; }
 
-      // Variable type: Text: → PlayerText:
       result = result.replace(/(?<![A-Za-z0-9_])Text:/g, () => { count('Text: tag'); return 'PlayerText:'; });
-
-      // TextDrawCreate(x, y, text) → CreatePlayerTextDraw(playerid, x, y, text)
       result = result.replace(/(?<![A-Za-z0-9_])TextDrawCreate\(/g, () => { count('TextDrawCreate'); return 'CreatePlayerTextDraw(playerid, '; });
 
-      // TextDrawDestroy(td) → PlayerTextDrawDestroy(playerid, td)
       result = result.replace(/(?<![A-Za-z0-9_])TextDrawDestroy\(([^)]+)\)/g, (m, td) => {
         count('TextDrawDestroy'); return `PlayerTextDrawDestroy(playerid, ${td.trim()})`;
       });
 
-      // Functions with pattern: TextDrawXxx(td, ...) → PlayerTextDrawXxx(playerid, td, ...)
       const simpleConversions = [
-        'TextDrawLetterSize',
-        'TextDrawTextSize',
-        'TextDrawAlignment',
-        'TextDrawColor',
-        'TextDrawUseBox',
-        'TextDrawBoxColor',
-        'TextDrawSetShadow',
-        'TextDrawSetOutline',
-        'TextDrawBackgroundColor',
-        'TextDrawFont',
-        'TextDrawSetProportional',
-        'TextDrawSetSelectable',
-        'TextDrawSetString',
-        'TextDrawSetPreviewModel',
-        'TextDrawSetPreviewRot',
+        'TextDrawLetterSize', 'TextDrawTextSize', 'TextDrawAlignment',
+        'TextDrawColor', 'TextDrawUseBox', 'TextDrawBoxColor',
+        'TextDrawSetShadow', 'TextDrawSetOutline', 'TextDrawBackgroundColor',
+        'TextDrawFont', 'TextDrawSetProportional', 'TextDrawSetSelectable',
+        'TextDrawSetString', 'TextDrawSetPreviewModel', 'TextDrawSetPreviewRot',
         'TextDrawSetPreviewVehCol',
       ];
 
@@ -499,17 +680,14 @@
         });
       });
 
-      // TextDrawShowForPlayer(playerid, td) → PlayerTextDrawShow(playerid, td)
       result = result.replace(/(?<![A-Za-z0-9_])TextDrawShowForPlayer\(([^,]+),\s*([^)]+)\)/g, (m, pid, td) => {
         count('TextDrawShowForPlayer'); return `PlayerTextDrawShow(${pid.trim()}, ${td.trim()})`;
       });
 
-      // TextDrawHideForPlayer(playerid, td) → PlayerTextDrawHide(playerid, td)
       result = result.replace(/(?<![A-Za-z0-9_])TextDrawHideForPlayer\(([^,]+),\s*([^)]+)\)/g, (m, pid, td) => {
         count('TextDrawHideForPlayer'); return `PlayerTextDrawHide(${pid.trim()}, ${td.trim()})`;
       });
 
-      // TextDrawShowForAll / TextDrawHideForAll — warn in stats
       const showAll = (result.match(/TextDrawShowForAll\(/g) || []).length;
       const hideAll = (result.match(/TextDrawHideForAll\(/g) || []).length;
       if (showAll > 0) counts['⚠ TextDrawShowForAll (manual)'] = showAll;
@@ -517,6 +695,78 @@
 
       const statsArr = Object.entries(counts).map(([k, v]) => [k, v]);
       return { content: result, stats: statsArr };
+    }
+
+    // ─── MODE 3: Stream Distance Changer ─────────────────────────────────────────
+
+    function convertStreamDistance(content) {
+      const newVal = parseFloat(document.getElementById('sdNewValue').value);
+      if (isNaN(newVal) || newVal <= 0) throw new Error('Masukkan nilai stream distance yang valid (> 0)');
+
+      const newStr = newVal % 1 === 0 ? newVal.toFixed(1) : String(newVal);
+
+      let changed = 0;
+      const oldValCounts = {}; // track distribution of replaced values
+
+      // Match CreateDynamicObject(...) — we need to find and replace params 10 & 11 (0-indexed)
+      // Strategy: match the whole CreateDynamicObject call, parse args, replace, rebuild
+      const result = content.replace(
+        /(?<![A-Za-z0-9_])(CreateDynamicObject)\(([^;]+?)\)(?=\s*[;,)\n])/g,
+        (match, fn, argsRaw) => {
+          const parts = splitArgs(argsRaw);
+          // CreateDynamicObject has at least 11 params (up to 14 with areaid, priority)
+          // params: model(0) x(1) y(2) z(3) rx(4) ry(5) rz(6) world(7) interior(8) player(9) streamdist(10) drawdist(11) ...
+          if (parts.length < 11) return match;
+
+          const streamIdx = 10;
+          const drawIdx = 11;
+
+          const oldStream = parseFloat(parts[streamIdx]);
+          const oldDraw = parts.length > drawIdx ? parseFloat(parts[drawIdx]) : null;
+
+          // Check if should replace based on mode
+          let shouldReplace = false;
+          if (sdMode === 'all') {
+            shouldReplace = true;
+          } else if (sdMode === 'below') {
+            shouldReplace = oldStream < newVal;
+          } else if (sdMode === 'exact') {
+            const exactVal = parseFloat(document.getElementById('sdExactValue').value);
+            shouldReplace = Math.abs(oldStream - exactVal) < 0.01;
+          }
+
+          if (!shouldReplace) return match;
+
+          // Track old values
+          const oldKey = oldStream % 1 === 0 ? oldStream.toFixed(1) : String(oldStream);
+          oldValCounts[oldKey] = (oldValCounts[oldKey] || 0) + 1;
+          changed++;
+
+          // Replace streamdist and drawdist
+          parts[streamIdx] = newStr;
+          if (parts.length > drawIdx && oldDraw !== null && !isNaN(oldDraw)) {
+            parts[drawIdx] = newStr;
+          }
+
+          return `${fn}(${parts.join(', ')})`;
+        }
+      );
+
+      // Build breakdown sorted by count desc
+      const breakdown = Object.entries(oldValCounts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([val, cnt]) => [val, cnt]);
+
+      const modeLabel = sdMode === 'all' ? 'Semua' : sdMode === 'below' ? `< ${newStr}` : `= ${document.getElementById('sdExactValue').value}`;
+
+      return {
+        content: result,
+        stats: [
+          [`Objects diubah (${modeLabel})`, changed],
+          ['Nilai baru', `${newStr}`],
+        ],
+        breakdown
+      };
     }
 
     // ─── Helper ──────────────────────────────────────────────────────────────────
